@@ -146,7 +146,7 @@ export function EventsClient() {
                 <h2 className="mb-4 text-lg font-bold text-zinc-900">
                   {formatDayHeading(date)}
                 </h2>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {items.map((ev) => (
                     <EventCard key={ev.id} event={ev} />
                   ))}

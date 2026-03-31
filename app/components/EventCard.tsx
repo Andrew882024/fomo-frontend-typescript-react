@@ -5,19 +5,43 @@ type Props = {
   event: FreeFoodEvent;
 };
 
+/** "Mar 30, 2026, 12:00 PM – 2:00 PM" → date vs time for green/black styling */
+function splitDateTime(dateStr: string): { datePart: string; timePart: string } | null {
+  const m = dateStr.match(/^([A-Za-z]+ \d+, \d{4}),\s*(.+)$/);
+  if (!m) return null;
+  return { datePart: m[1], timePart: m[2] };
+}
+
+/** Leading "Free " in gray, remainder bold (reference UI). */
+function splitTitle(name: string): { showFree: boolean; rest: string } {
+  const m = name.match(/^(free)\s+/i);
+  if (m) return { showFree: true, rest: name.slice(m[0].length) };
+  return { showFree: false, rest: name };
+}
+
+function sourceHostname(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
 export function EventCard({ event }: Props) {
   const href = event.url?.trim() || undefined;
+  const title = splitTitle(event.event_name);
+  const dt = splitDateTime(event.date);
 
   const inner = (
     <>
-      <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-lg bg-zinc-100 sm:h-32 sm:w-32">
+      <div className="relative h-[88px] w-[88px] shrink-0 overflow-hidden rounded-lg bg-zinc-100 sm:h-[96px] sm:w-[96px]">
         {event.image ? (
           <Image
             src={event.image}
             alt=""
             fill
             className="object-cover"
-            sizes="128px"
+            sizes="96px"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-2xl text-zinc-400">
@@ -25,30 +49,49 @@ export function EventCard({ event }: Props) {
           </div>
         )}
       </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-base font-semibold leading-snug text-zinc-900">
-          {event.event_name}
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <h3 className="text-sm leading-snug text-black sm:text-[15px]">
+          {title.showFree ? (
+            <>
+              <span className="font-normal text-[#6c757d]">Free </span>
+              <span className="font-bold">{title.rest}</span>
+            </>
+          ) : (
+            <span className="font-bold">{title.rest}</span>
+          )}
         </h3>
-        <p className="mt-1.5 flex items-start gap-1.5 text-sm text-[#28a745]">
-          <CalendarIcon className="mt-0.5 shrink-0" />
-          <span>{event.date}</span>
+        <p className="mt-1 flex flex-wrap items-center gap-x-1 text-sm leading-snug">
+          <CalendarIcon className="mt-0.5 shrink-0 text-zinc-500" />
+          {dt ? (
+            <>
+              <span className="font-bold text-[#28a745]">{dt.datePart}</span>
+              <span className="font-normal text-black">, {dt.timePart}</span>
+              <span
+                className="ml-0.5 inline-block size-1.5 shrink-0 rounded-full bg-[#28a745]"
+                aria-hidden
+              />
+            </>
+          ) : (
+            <span className="font-bold text-[#28a745]">{event.date}</span>
+          )}
         </p>
-        <p className="mt-1 flex items-start gap-1.5 text-sm text-zinc-700">
+        <p className="mt-0.5 flex items-start gap-1.5 text-sm leading-snug text-black">
           <PinIcon className="mt-0.5 shrink-0 text-red-500" />
-          <span>{event.location}</span>
+          <span className="font-normal">{event.location}</span>
         </p>
-        {event.url ? (
-          <p className="mt-2 truncate text-xs text-zinc-400">
+        {href ? (
+          <p className="mt-2 text-[12px] leading-snug text-[#6c757d]">
             Source:{" "}
-            <span className="text-zinc-500">{event.url}</span>
+            <span className="text-[#007bff]">{sourceHostname(href)}</span>
+            <span className="text-[#6c757d]"> · open card to view</span>
           </p>
         ) : null}
       </div>
     </>
   );
 
-  const className =
-    "flex gap-4 rounded-xl border border-zinc-200/90 bg-white p-4 shadow-sm transition-shadow hover:shadow-md";
+  const shell =
+    "flex gap-4 rounded-xl bg-white p-3 shadow-[0_4px_6px_rgba(0,0,0,0.1)] transition-shadow hover:shadow-[0_6px_14px_rgba(0,0,0,0.12)] sm:p-4";
 
   if (href) {
     return (
@@ -56,22 +99,22 @@ export function EventCard({ event }: Props) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${className} block outline-none ring-blue-500/40 focus-visible:ring-2`}
+        className={`${shell} block outline-none focus-visible:ring-2 focus-visible:ring-[#007bff] focus-visible:ring-offset-2`}
       >
         {inner}
       </a>
     );
   }
 
-  return <div className={className}>{inner}</div>;
+  return <div className={shell}>{inner}</div>;
 }
 
 function CalendarIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      width="16"
-      height="16"
+      width="15"
+      height="15"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -88,8 +131,8 @@ function PinIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      width="16"
-      height="16"
+      width="15"
+      height="15"
       viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden
