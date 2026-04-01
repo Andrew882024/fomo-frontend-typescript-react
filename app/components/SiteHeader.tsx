@@ -15,17 +15,6 @@ export function SiteHeader() {
           >
             FOMO
           </Link>
-          <nav className="hidden gap-6 text-sm font-medium text-zinc-600 sm:flex">
-            <Link href="/" className="text-zinc-900">
-              Events
-            </Link>
-            <span className="cursor-not-allowed text-zinc-400" title="Coming soon">
-              Leaderboard
-            </span>
-            <span className="cursor-not-allowed text-zinc-400" title="Coming soon">
-              Store
-            </span>
-          </nav>
         </div>
       </div>
     </header>
