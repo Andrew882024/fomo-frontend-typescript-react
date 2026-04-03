@@ -5,7 +5,7 @@ import { fetchEvents } from "@/lib/api";
 import {
   dayKey,
   formatDayHeading,
-  parseEventDateStart,
+  parseEventDateStart,    
 } from "@/lib/dates";
 import type { FreeFoodEvent } from "@/lib/types";
 import { EventCard } from "./EventCard";
@@ -124,8 +124,12 @@ export function EventsClient() {
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">
             <p>{error}</p>
             <p className="mt-1 text-xs text-amber-800/80">
-              Start the API on port 8000, or set{" "}
-              <code className="rounded bg-amber-100/80 px-1">NEXT_PUBLIC_API_URL</code>.
+              Set <code className="rounded bg-amber-100/80 px-1">BACKEND_URL</code> in{" "}
+              <code className="rounded bg-amber-100/80 px-1">.env.local</code> (e.g.{" "}
+              <code className="rounded bg-amber-100/80 px-1">
+                http://127.0.0.1:8000
+              </code>
+              ) and restart the dev server.
             </p>
             <button
               type="button"

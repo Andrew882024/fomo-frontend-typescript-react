@@ -1,19 +1,11 @@
 import type { FreeFoodEvent } from "./types";
 
-const DEFAULT_BASE = "http://127.0.0.1:8000";
-
-export function getApiBase(): string {
-  if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
-  }
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
-  }
-  return DEFAULT_BASE;
-}
-
+/**
+ * Loads events through the Next.js route `/api/events` (same origin in the browser).
+ * The route handler calls the FastAPI backend on the server, avoiding CORS.
+ */
 export async function fetchEvents(): Promise<FreeFoodEvent[]> {
-  const res = await fetch(`${getApiBase()}/events`, {
+  const res = await fetch("/api/events", {
     cache: "no-store",
   });
   if (!res.ok) {

@@ -20,11 +20,16 @@ export default function Home() {
             >
               ucsd-free-food
             </a>
-            . Your backend can scrape and store snapshots; this page reads{" "}
+            . Your backend can scrape and store snapshots; this page loads events via
+            this site&apos;s{" "}
+            <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-zinc-800">
+              /api/events
+            </code>{" "}
+            route, which forwards to FastAPI{" "}
             <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm text-zinc-800">
               GET /events
-            </code>{" "}
-            from your FastAPI app.
+            </code>
+            .
           </p>
           <p className="mt-3 text-sm text-zinc-500">
             Data: sheep.thingkingland.app · Not affiliated with UC San Diego.
